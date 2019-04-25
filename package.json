@@ -1,16 +1,31 @@
 {
-  "name": "uef-ms-refference",
+  "name": "uef-ms-reference",
   "version": "0.0.1",
-  "description": "uef-ms-reffrence",
+  "description": "uef-ms-reference",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "start": "node index.js",
+    "start:dev": "nodemon index.js",
+    "test": "nyc mocha --exit && nyc report --reporter=lcov",
+    "lint": "eslint src/**/*.js"
   },
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "chai": "^4.2.0",
+    "chai-http": "^4.2.1",
     "express": "^4.16.4",
+    "graphql-request": "^1.8.2",
+    "log4js": "^4.1.0",
     "node-fetch": "^2.3.0",
     "redis": "^2.8.0"
+  },
+  "devDependencies": {
+    "eslint": "^5.16.0",
+    "eslint-config-airbnb-base": "^13.1.0",
+    "eslint-plugin-import": "^2.17.2",
+    "nodemon": "^1.18.11",
+    "nyc": "^14.0.0",
+    "supertest": "^4.0.2"
   }
 }
