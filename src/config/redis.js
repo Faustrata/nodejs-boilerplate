@@ -1,4 +1,5 @@
 const redis = require('redis');
+const { promisify } = require('util');
 const logger = require('../common/logger');
 
 const redisClient = redis.createClient(6379);
@@ -10,4 +11,6 @@ redisClient.on('error', (error) => {
   logger.error(error);
 });
 
-module.exports = redisClient;
+const getAsync = promisify(redisClient.get).bind(redisClient);
+
+module.exports = getAsync;

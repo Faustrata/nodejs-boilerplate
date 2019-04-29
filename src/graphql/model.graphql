@@ -1,0 +1,8 @@
+type ReferenceAccess {
+    id: Int
+    code: String
+    name: String
+    referenceGroup: String
+    isAlternateEntry: Boolean
+}
+

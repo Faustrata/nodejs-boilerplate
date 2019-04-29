@@ -1,19 +1,27 @@
 const fetch = require('node-fetch');
 const logger = require('../common/logger');
+const { UEF_MS_LOGIN_URL } = require('../common/constant');
 
-module.exports = (req, res, next) => {
+module.exports = async (req, res, next) => {
   const { authorization } = { ...req.headers };
-
   try {
-    const ssoUser = 'https://eform-unified-dev.apps.dev.corp.btpn.co.id/sso/user';
-    logger.info(`Oauth - ${ssoUser} - ${authorization}`);
-    fetch(ssoUser, { headers: { authorization } });
+    const ssoUser = `${UEF_MS_LOGIN_URL}/user`;
+    const response = await fetch(ssoUser, { headers: { authorization } });
+    if (response.status !== 200) {
+      logger.error(`Oauth - ${response.statusText}`);
+      res.status(response.status).json({
+        errors: [
+          {
+            message: response.statusText,
+          },
+        ],
+        data: {},
+      });
+      return;
+    }
     next();
   } catch (error) {
     logger.error(`Oauth - ${error.message}`);
-    res.status(401).json({
-      code: 401,
-      message: error.message,
-    });
+    throw new Error(error.message);
   }
 };

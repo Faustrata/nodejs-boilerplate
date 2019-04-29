@@ -1,15 +1,17 @@
 const { GraphQLClient } = require('graphql-request');
+const logger = require('../common/logger');
+const redisGetData = require('../config/redis');
+const { MASTER_DATA_URL } = require('../common/constant');
 
-module.exports = {
-  fetchFromApi: async (referenceGroup, authorization) => {
-    const endpoint = 'https://ms-master-data-eform-unified-dev.apps.dev.corp.btpn.co.id/graphql';
-    const graphQLClient = new GraphQLClient(endpoint, {
-      headers: {
-        Authorization: authorization,
-      },
-    });
+module.exports.fetchFromApi = (referenceGroup, authorization) => {
+  const endpoint = `${MASTER_DATA_URL}/graphql`;
+  const graphQLClient = new GraphQLClient(endpoint, {
+    headers: {
+      Authorization: authorization,
+    },
+  });
 
-    const query = `
+  const query = `
     {
       availableReferenceAccessByGroup(referenceGroup: "${referenceGroup}") {
             id
@@ -20,6 +22,26 @@ module.exports = {
         }
     }
   `;
-    return graphQLClient.request(query);
-  },
+  return graphQLClient.request(query);
+};
+
+
+module.exports.availableReferenceAccessByGroup = async (root, args, context) => {
+  const group = args.referenceGroup;
+  const { authorization } = { ...context.headers };
+
+  try {
+    const data = await redisGetData(group);
+    if (data) {
+      logger.info(`Fetch from Cache ${data}`);
+      return JSON.parse(data.availableReferenceAccessByGroup);
+    }
+
+    const response = await this.fetchFromApi(group, authorization);
+    logger.info(`Fetch from API ${JSON.stringify(response.availableReferenceAccessByGroup)}`);
+    return response.availableReferenceAccessByGroup;
+  } catch (error) {
+    logger.error(error.message);
+    throw new Error(error);
+  }
 };

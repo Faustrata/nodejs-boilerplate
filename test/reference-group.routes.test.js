@@ -1,3 +1,4 @@
+
 const chai = require('chai');
 const chaiHttp = require('chai-http');
 const request = require('supertest');
@@ -7,22 +8,14 @@ const server = require('../');
 
 chai.use(chaiHttp);
 
-process.env.NODE_ENV = 'test';
+process.env.PORT = 3001;
 
-describe('/reference', () => {
-  describe('GET /reference/:group', () => {
-    it('should response with status Not Found', (done) => {
-      request(server)
-        .get('/reference')
-        .end((err, res) => {
-          res.status.should.equal(404);
-          done();
-        });
-    });
-
+describe('/GraphQL', () => {
+  describe('availableReferenceAccessByGroup', () => {
     it('should response with status Unauthorized', (done) => {
       request(server)
-        .get('/reference/GENDER')
+        .post('/graphql')
+        .send({ query: '{ availableReferenceAccessByGroup: (referenceGroup: "GENDER") { id code name }}' })
         .end((err, res) => {
           res.status.should.equal(401);
           done();

@@ -15,9 +15,15 @@
     "chai": "^4.2.0",
     "chai-http": "^4.2.1",
     "express": "^4.16.4",
+    "express-graphql": "^0.8.0",
+    "graphql": "^14.2.1",
     "graphql-request": "^1.8.2",
+    "graphql-tools": "^4.0.4",
+    "lodash": "^4.17.11",
     "log4js": "^4.1.0",
+    "merge-graphql-schemas": "^1.5.8",
     "node-fetch": "^2.3.0",
+    "promisify": "0.0.3",
     "redis": "^2.8.0"
   },
   "devDependencies": {
