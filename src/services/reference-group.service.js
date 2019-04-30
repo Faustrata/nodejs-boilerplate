@@ -1,28 +1,15 @@
-const { GraphQLClient } = require('graphql-request');
+const fetch = require('node-fetch');
 const logger = require('../common/logger');
 const redisGetData = require('../config/redis');
 const { MASTER_DATA_URL } = require('../common/constant');
 
 module.exports.fetchFromApi = (referenceGroup, authorization) => {
-  const endpoint = `${MASTER_DATA_URL}/graphql`;
-  const graphQLClient = new GraphQLClient(endpoint, {
+  const endpoint = `${MASTER_DATA_URL}/reference?group=${referenceGroup}`;
+  return fetch(endpoint, {
     headers: {
       Authorization: authorization,
     },
   });
-
-  const query = `
-    {
-      availableReferenceAccessByGroup(referenceGroup: "${referenceGroup}") {
-            id
-            code
-            name
-            referenceGroup
-            isAlternateEntry
-        }
-    }
-  `;
-  return graphQLClient.request(query);
 };
 
 

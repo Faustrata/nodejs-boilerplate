@@ -15,8 +15,8 @@ app.post('/graphql', oauthClient, graphql);
 
 process.env.NODE_TLS_REJECT_UNAUTHORIZED = 0;
 
+const port = process.env.PORT || 3001;
 
-const port = process.env.PORT || 3000;
 app.listen(port, () => {
   logger.info(`Server listening on port: ${port}`);
 });
