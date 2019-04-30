@@ -9,13 +9,13 @@ const redisClient = require('../../src/config/redis');
 const logger = require('../../src/common/logger');
 
 sinon.stub(logger, 'info');
-
+sinon.stub(logger, 'error');
 
 chai.use(chaiHttp);
 
 const server = require('../..');
 
-describe('/reference-group-resolver', () => {
+describe('reference-group-resolver', () => {
   const responseData = [
     {
       id: 31,
@@ -33,11 +33,14 @@ describe('/reference-group-resolver', () => {
     },
   ];
 
-  beforeEach((done) => {
+  beforeEach(() => {
     mock(UEF_MS_LOGIN_URL)
       .get('/user')
       .reply(200, { access_token: '04da4ae6-80a1-419b-824b-604e22f10d10' });
-    done();
+  });
+
+  afterEach(async () => {
+    await redisClient.delAsync('GENDER');
   });
 
   it('should response with status OK when application is running', async () => {
@@ -90,5 +93,28 @@ describe('/reference-group-resolver', () => {
       });
     expect(result.status).to.equal(200);
     expect(result.body.data).to.eql({ availableReferenceAccessByGroup: responseData });
+  });
+
+  it('should return error when data on redis does not exist and cannot connect to API', async () => {
+    mock(MASTER_DATA_URL)
+      .post('/graphql')
+      .replyWithError('Internal Server Error');
+
+    const result = await chai.request(server)
+      .post('/graphql')
+      .set('Authorization', 'Bearer')
+      .set('Accept', 'application/json')
+      .send({
+        query: '{\n'
+          + '  availableReferenceAccessByGroup(referenceGroup: "GENDER") {\n'
+          + '    id\n'
+          + '    name\n'
+          + '    code\n'
+          + '    referenceGroup\n'
+          + '    isAlternateEntry\n'
+          + '  }\n'
+          + '}',
+      });
+    expect(result.body.data.availableReferenceAccessByGroup).to.eql(null);
   });
 });

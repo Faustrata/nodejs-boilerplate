@@ -7,10 +7,10 @@ const { UEF_MS_LOGIN_URL } = require('../../src/common/constant');
 const logger = require('../../src/common/logger');
 
 const { expect } = chai;
-stub(logger, 'error');
+// stub(logger, 'error');
 chai.use(sinonChai);
 
-describe('oauth', () => {
+describe('oauth-config', () => {
   const token = 'Bearer 04da4ae6-80a1-419b-824b-604e22f10d10';
   const next = spy();
   const req = {

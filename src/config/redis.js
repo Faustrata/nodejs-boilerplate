@@ -14,8 +14,10 @@ redisClient.on('error', (error) => {
 
 const getAsync = promisify(redisClient.get).bind(redisClient);
 const setAsync = promisify(redisClient.set).bind(redisClient);
+const delAsync = promisify(redisClient.del).bind(redisClient);
 
 module.exports = {
   getAsync,
   setAsync,
+  delAsync,
 };
