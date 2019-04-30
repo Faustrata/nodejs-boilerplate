@@ -22,6 +22,6 @@ module.exports = async (req, res, next) => {
     next();
   } catch (error) {
     logger.error(`Oauth - ${error.message}`);
-    throw new Error(error.message);
+    throw new Error(error);
   }
 };

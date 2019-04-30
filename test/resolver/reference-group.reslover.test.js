@@ -2,19 +2,20 @@ const sinon = require('sinon');
 const mock = require('nock');
 const chai = require('chai');
 const chaiHttp = require('chai-http');
+
+const { expect } = chai;
 const { UEF_MS_LOGIN_URL, MASTER_DATA_URL } = require('../../src/common/constant');
 const redisClient = require('../../src/config/redis');
 const logger = require('../../src/common/logger');
 
 sinon.stub(logger, 'info');
 
-const { expect } = chai;
 
 chai.use(chaiHttp);
 
 const server = require('../..');
 
-describe('/resolver', () => {
+describe('/reference-group-resolver', () => {
   const responseData = [
     {
       id: 31,
@@ -40,7 +41,7 @@ describe('/resolver', () => {
   });
 
   it('should response with status OK when application is running', async () => {
-    const result = await chai.request(server).get('/')
+    const result = await chai.request(server).get('/');
     expect(result.status).to.equal(200);
     expect(result.body.message).to.equal('Application is running');
   });
